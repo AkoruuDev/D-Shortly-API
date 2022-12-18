@@ -1,24 +1,30 @@
 import { db } from "../database/database.js";
 import bcrypt from "bcrypt";
-// import { v4 as uuid } from "uuid";
+import { v4 as uuid } from "uuid";
 
 export async function signIn ( req, res ) {
-    const { email, password } = req.body;
-    const token = '' //uuid();
-
-    /* 
-    const user = await db.query('SELECT * FROM users WHERE email = $1', [email]);
-    if ( user.rows.length === 0 ) {
-        return res.status(401).send("This user doesn't exists");
+    const { email, password } = res.locals.body;
+    const token = uuid();
+    const user = {
+        rows: {
+            userId: 1,
+            token
+        }
     }
-    const pass = bcrypt.compareSync(user.password, password);
-    if ( pass ) {
-        return res.status(401).send("Password incorrect");
-    }
-    */
 
-    console.log({ email, password });
-    res.status(200).send({ token });
+   /*  const userId = await db.query(`
+        SELECT id
+        FROM users
+        WHERE email = $1`,
+        [email]);
+    const user = await db.query(`
+        INSERT INTO
+        sessions ("userId", token)
+        VALUES ( $1, $2 )`,
+        [userId.rows, token]); */
+
+    console.log({ token: user.rows.token });
+    res.status(200).send({ token: user.rows.token });
 };
 
 export async function signUp ( req, res ) {
