@@ -5,6 +5,10 @@ export const signInSchema = Joi.object({
         .string()
         .min(1)
         .max(100)
+        .required(),
+    password: Joi
+        .string()
+        .min(1)
         .required()
 }).options({ abortEarly: false });
 

@@ -1,32 +1,27 @@
 import { db } from "../database/database.js";
 import bcrypt from "bcrypt";
 import { v4 as uuid } from "uuid";
-import { signInSchema } from "../tools/logValidate.js";
 
 export async function signIn ( req, res ) {
-    const { email, password } = res.locals.body;
+    const { email } = res.locals.body;
     const token = uuid();
-    const user = {
-        rows: {
-            userId: 1,
-            token
-        }
-    }
 
-    // Put TRY/CATCH
-    /* const userId = await db.query(`
-        SELECT id
-        FROM users
-        WHERE email = $1`,
+    try {
+        const userId = await db.query(`
+            SELECT id
+            FROM users
+            WHERE email = $1`,
         [email]);
-    const user = await db.query(`
-        INSERT INTO
-        sessions ("userId", token)
-        VALUES ( $1, $2 )`,
-        [userId.rows.id, token]); */
+        const user = await db.query(`
+            INSERT INTO
+            sessions ("userId", token)
+            VALUES ( $1, $2 )`,
+        [userId.rows[0].id, token]);
 
-    console.log({ token: user.rows.token });
-    res.status(200).send({ token: user.rows.token });
+        res.status(200).send({ token });
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
 };
 
 export async function signUp ( req, res ) {
