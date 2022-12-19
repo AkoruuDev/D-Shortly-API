@@ -2,7 +2,7 @@ import Joi from "joi";
 
 export const signInSchema = Joi.object({
     email: Joi
-        .email()
+        .string()
         .min(1)
         .max(100)
         .required()
@@ -15,7 +15,7 @@ export const signUpSchema = Joi.object({
         .max(50)
         .required(),
     email: Joi
-        .email()
+        .string()
         .min(1)
         .max(100)
         .required(),
@@ -23,7 +23,7 @@ export const signUpSchema = Joi.object({
         .string()
         .min(6)
         .required(),
-    confirmPass: Joi
-        .ref(password)
+    confirmPassword: Joi
+        .ref('password')
 
 }).options({ abortEarly: false });
