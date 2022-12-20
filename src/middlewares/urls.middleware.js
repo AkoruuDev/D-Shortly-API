@@ -1,5 +1,5 @@
 import { db } from "../database/database.js";
-import { shortenSchema } from "../tools/urlsValidate.js";
+import { idSchema, shortenSchema } from "../tools/urlsValidate.js";
 
 export async function shortenValidate( req, res, next ) {
     const { authorization } = req.headers;
@@ -25,12 +25,24 @@ export async function shortenValidate( req, res, next ) {
 };
 
 export async function getIdValidate( req, res, next ) {
-    const {} = req.body;
+    const { id } = req.params;
 
-    return res.status(201).send();
-    
+    const { error } = idSchema.validate({ id });
+    if (error) {
+        return res.status(422).send(error.details.map(e => e.message));
+    }
 
-    res.locals.body = {};
+    try {
+        const url = await db.query(`SELECT id, "shortUrl", url FROM urls WHERE id = $1;`, [id]);
+        if (url.rows.length === 0) {
+            return res.status(404).send(`There isn't shorthen url for this id`);
+        }
+
+        res.locals.body = { url: url.rows[0] };
+    } catch (error) {
+        return res.status(500).send(error.message);
+    }
+
     next();
 };
 

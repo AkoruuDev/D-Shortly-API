@@ -9,3 +9,10 @@ export const shortenSchema = Joi.object({
             .uri()
             .required()
 });
+
+export const idSchema = Joi.object({
+        id: Joi
+                .number()
+                .required()
+                .min(1)
+});

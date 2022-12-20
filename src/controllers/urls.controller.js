@@ -6,7 +6,7 @@ export async function shorten( req, res ) {
     const short = nanoid(10);
     
     try {
-        await db.query(`INSERT INTO urls ("userId", url, cut) VALUES ($1, $2, $3);`, [userId, url, short]);
+        await db.query(`INSERT INTO urls ("userId", url, "shortUrl") VALUES ($1, $2, $3);`, [userId, url, short]);
 
         return res.status(201).send({ shortUrl: short });
     } catch (error) {
@@ -15,13 +15,9 @@ export async function shorten( req, res ) {
 };
 
 export async function getId( req, res ) {
-    const {} = req.body;
-
-    try {
-        return res.status(201).send({ shortUrl: short });
-    } catch (error) {
-        return res.status(500).send(error.message);
-    }
+    const { url } = res.locals.body;
+    
+    res.status(200).send(url)
 };
 
 export async function shortUrl( req, res ) {
