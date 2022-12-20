@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 // route path
 import log from "./routes/log.routes.js";
 import ranking from "./routes/ranking.routes.js";
-import url from "./routes/url.routes.js";
+import url from "./routes/urls.routes.js";
 import user from "./routes/user.routes.js";
 
 // config
