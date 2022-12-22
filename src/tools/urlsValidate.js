@@ -8,7 +8,7 @@ export const shortenSchema = Joi.object({
             .string()
             .uri()
             .required()
-});
+}).options({ abortEarly: false});
 
 export const authSchema = Joi.object({
         authorization: Joi
@@ -18,18 +18,18 @@ export const authSchema = Joi.object({
                 .number()
                 .min(1)
                 .required()
-});
+}).options({ abortEarly: false});
 
 export const idSchema = Joi.object({
         id: Joi
                 .number()
                 .required()
                 .min(1)
-});
+}).options({ abortEarly: false});
 
 export const urlSchema = Joi.object({
         url: Joi
                 .string()
                 .required()
                 .length(10)
-});
+}).options({ abortEarly: false});

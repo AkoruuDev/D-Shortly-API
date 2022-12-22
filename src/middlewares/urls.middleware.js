@@ -54,7 +54,7 @@ export async function shortUrlValidate( req, res, next ) {
         return res.status(422).send(error.details.map(e => e.message));
     }
 
-    const url = await db.query(`SELECT id, url FROM urls WHERE "shortUrl" = $1;`, [shortUrl]);
+    const url = await db.query(`SELECT id, url, "userId" FROM urls WHERE "shortUrl" = $1;`, [shortUrl]);
     if (url.rows.length === 0) {
         return res.status(404).send(`Url not found`);
     }

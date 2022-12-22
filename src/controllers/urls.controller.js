@@ -22,13 +22,15 @@ export async function getId( req, res ) {
 
 export async function shortUrl( req, res ) {
     const { url } = res.locals.body;
-
+    console.log(url)
+    
+    const userId = 1;
     try {   
         const viwer = await db.query(`SELECT viwers FROM viwers WHERE "urlId" = $1;`, [url.id]);
         if (viwer.rows.length !== 0) {
             await db.query(`UPDATE viwers SET viwers = $1 WHERE "urlId" = $2;`, [viwer.rows[0].viwers + 1, url.id]);
         } else {
-            await db.query(`INSERT INTO viwers ("urlId", viwers) VALUES ($1, $2);`, [url.id, 1]);
+            await db.query(`INSERT INTO viwers ("userId", "urlId", viwers) VALUES ($1, $2, $3);`, [url.userId, url.id, 1]);
         }
 
         return res.status(200).send(url.url);
