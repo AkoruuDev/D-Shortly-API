@@ -16,3 +16,10 @@ export const idSchema = Joi.object({
                 .required()
                 .min(1)
 });
+
+export const urlSchema = Joi.object({
+        url: Joi
+                .string()
+                .required()
+                .length(10)
+});

@@ -17,14 +17,21 @@ export async function shorten( req, res ) {
 export async function getId( req, res ) {
     const { url } = res.locals.body;
     
-    res.status(200).send(url)
+    return res.status(200).send(url)
 };
 
 export async function shortUrl( req, res ) {
-    const {} = req.body;
+    const { url } = res.locals.body;
 
-    try {
-        return res.status(201).send({ shortUrl: short });
+    try {   
+        const viwer = await db.query(`SELECT viwers FROM viwers WHERE "urlId" = $1;`, [url.id]);
+        if (viwer.rows.length !== 0) {
+            await db.query(`UPDATE viwers SET viwers = $1 WHERE "urlId" = $2;`, [viwer.rows[0].viwers + 1, url.id]);
+        } else {
+            await db.query(`INSERT INTO viwers ("urlId", viwers) VALUES ($1, $2);`, [url.id, 1]);
+        }
+
+        return res.status(201).send(url.url);
     } catch (error) {
         return res.status(500).send(error.message);
     }
