@@ -1,5 +1,5 @@
 import { db } from "../database/database.js";
-import { idSchema, urlSchema, shortenSchema } from "../tools/urlsValidate.js";
+import { idSchema, urlSchema, authSchema, shortenSchema } from "../tools/urlsValidate.js";
 
 export async function shortenValidate( req, res, next ) {
     const { authorization } = req.headers;
@@ -17,7 +17,7 @@ export async function shortenValidate( req, res, next ) {
     const token = authorization.replace('Bearer ', '');
     const validToken = await db.query(`SELECT * FROM sessions WHERE token = $1;`, [token]);
     if (!validToken.rows[0]?.token) {
-        return res.status(401).send('This token is invalid');
+        return res.status(401).send('This user is invalid');
     }
 
     res.locals.body = { url, userId: validToken.rows[0]?.userId };
@@ -56,7 +56,7 @@ export async function shortUrlValidate( req, res, next ) {
 
     const url = await db.query(`SELECT id, url FROM urls WHERE "shortUrl" = $1;`, [shortUrl]);
     if (url.rows.length === 0) {
-        return res.status(440).send(`Unable to find url`);
+        return res.status(404).send(`Url not found`);
     }
     
     res.locals.body = { url: url.rows[0] };
@@ -64,11 +64,32 @@ export async function shortUrlValidate( req, res, next ) {
 };
 
 export async function deleteIdValidate( req, res, next ) {
-    const {} = req.body;
-
-    return res.status(201).send();
+    const { authorization } = req.headers;
+    const { id } = req.params;
     
+    if (!authorization) {
+        return res.status(401).send('The authorization is required');
+    }
 
-    res.locals.body = {};
+    const { error } = authSchema.validate({ authorization, id });
+    if (error) {
+        return res.status(422).send(error.details.map(e => e.message));
+    }
+
+    const token = authorization.replace('Bearer ', '');
+    const user = await db.query(`SELECT * FROM sessions WHERE token = $1;`, [token]);
+    if (!user.rows[0]?.token) {
+        return res.status(401).send('This user is invalid');
+    }
+
+    const url = await db.query(`SELECT * FROM urls WHERE id = $1;`, [id]);
+    if (url.rows.length === 0) {
+        return res.status(404).send(`Url not found`);
+    }
+    if (url.rows[0].userId !== user.rows[0].userId) {
+        return res.status(401).send(`Url must belong to the user`);
+    }
+
+    res.locals.body = { id: url.rows[0].id };
     next();
 };

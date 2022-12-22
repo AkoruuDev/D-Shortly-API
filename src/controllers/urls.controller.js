@@ -31,17 +31,20 @@ export async function shortUrl( req, res ) {
             await db.query(`INSERT INTO viwers ("urlId", viwers) VALUES ($1, $2);`, [url.id, 1]);
         }
 
-        return res.status(201).send(url.url);
+        return res.status(200).send(url.url);
     } catch (error) {
         return res.status(500).send(error.message);
     }
 };
 
 export async function deleteId( req, res ) {
-    const {} = req.body;
-
+    const { id } = res.locals.body;
+    
     try {
-        return res.status(201).send({ shortUrl: short });
+        await db.query(`DELETE FROM viwers WHERE "urlId" = $1`, [id]);
+        await db.query(`DELETE FROM urls WHERE id = $1`, [id]);
+
+        return res.status(204).send("Url deleted successfully");
     } catch (error) {
         return res.status(500).send(error.message);
     }

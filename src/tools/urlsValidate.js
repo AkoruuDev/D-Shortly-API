@@ -10,6 +10,16 @@ export const shortenSchema = Joi.object({
             .required()
 });
 
+export const authSchema = Joi.object({
+        authorization: Joi
+                .string()
+                .required(),
+        id: Joi
+                .number()
+                .min(1)
+                .required()
+});
+
 export const idSchema = Joi.object({
         id: Joi
                 .number()
