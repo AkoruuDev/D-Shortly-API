@@ -15,4 +15,4 @@ export async function home ( req, res ) {
     }
 
     return res.status(200).send(user);
-}
+};

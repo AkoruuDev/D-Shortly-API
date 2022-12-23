@@ -1,10 +1,12 @@
 import { Router } from "express";
-import { signIn, signUp } from "../controllers/log.controller.js";
-import { signInValidate, signUpValidate } from "../middlewares/log.middleware.js";
+import { logoff, signIn, signUp } from "../controllers/log.controller.js";
+import { logoffValidate, signInValidate, signUpValidate } from "../middlewares/log.middleware.js";
 
 const route = Router();
 
 route.post('/signup', signUpValidate , signUp);
 route.post('/signin', signInValidate, signIn);
+
+route.delete('/signout', logoffValidate, logoff);
 
 export default route;

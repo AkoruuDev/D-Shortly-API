@@ -20,6 +20,12 @@ export const authSchema = Joi.object({
                 .required()
 }).options({ abortEarly: false});
 
+export const authorizationSchema = Joi.object({
+        authorization: Joi
+                .string()
+                .required()
+}).options({ abortEarly: false});
+
 export const idSchema = Joi.object({
         id: Joi
                 .number()

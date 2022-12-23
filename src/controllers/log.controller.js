@@ -37,3 +37,14 @@ export async function signUp ( req, res ) {
         return res.status(500).send(error.message);
     }
 };
+
+export async function logoff ( req, res ) {
+    const { token } = res.locals.headers;
+
+    try {
+        await db.query(`DELETE FROM sessions WHERE token = $1`, [token]);
+        return res.status(200).send("Logout successfully");
+    } catch (error) {
+        return res.status(500).send(error.message);
+    }
+};
